@@ -1,0 +1,90 @@
+<!doctype html>
+<html ng-app='stock.app' id="ng-app" xmlns:ng="http://angularjs.org">
+<head>
+	<style>
+		[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak
+		{
+			display: none;
+		}
+
+		.chart-container {
+			float: left;
+			margin-left: 10px;
+			margin-top: 10px;
+			height: 350px; 
+			min-width: 24%;
+			border-style: dotted;
+			border-width: 1px;
+		}
+
+		body {
+			padding-top: 10px;
+		}
+
+		.menu-item {
+			padding-top: 10px;
+		}
+	</style>
+
+	<link href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet">
+
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular-route.min.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+	<script src="http://code.highcharts.com/stock/highstock.js" type="text/javascript"></script>
+	<script src="app.js" type="text/javascript"></script>
+	<script src="symbols.js" type="text/javascript"></script>
+</head>
+<body ng-cloak ng-controller="AppCtrl">
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div style="width:10%;float:left;">
+				<!--Sidebar content-->
+				<h4>Menu</h4>
+
+			    <div class="menu-item">
+			    	<input type="text" style="width:100px;" ng-model="query" placeholder="Search...">
+			    </div>
+				<div class="menu-item">
+					From
+				    <div class="form-horizontal">
+				        <input style="width:100px;" type="text" datepicker-popup="dd-MMM-yyyy" ng-model="dtFrom" is-open="openedFrom" min="minDate" max="maxDate" datepicker-options="dateOptions" ng-required="true" />
+				    </div>
+			    </div>
+			    <div class="menu-item">
+				    To
+				    <div class="form-horizontal">
+				        <input style="width:100px;" type="text" datepicker-popup="dd-MMM-yyyy" ng-model="dtTo" is-open="openedTo" min="minDate" max="maxDate" datepicker-options="dateOptions" ng-required="true" />
+				    </div>
+			    </div>
+			    <div class="menu-item">
+			    	<button class="btn btn-primary" type="button" ng-click="refresh()">Reload</button>
+			    	<div style="width:100px;" class="menu-item" ng-show="showProgreeBar">
+			    		<progress percent="progress" class="progress-striped active">
+			    	</div>
+			    </div>
+			</div>
+			<div style="width:90%;float:left;">
+				<!--Body content-->
+				<tabset>
+					<tab heading="401K Funds">
+						<div ng-repeat="s in symbols_401k | filter:query">
+							<div class="chart-container" id="{{s.symbol}}"></div>
+							<stock-chart render-id="s.symbol" title="s.title" symbol="s.symbol" ng-model="s.data"></stock-chart>
+						</div>
+					</tab>
+					<tab heading="My Stocks">
+						<div ng-repeat="s in symbols_stocks | filter:query">
+							<div class="chart-container" id="{{s.symbol}}"></div>
+							<stock-chart render-id="s.symbol" title="s.title" symbol="s.symbol" ng-model="s.data"></stock-chart>
+						</div>
+					</tab>
+				</tabset>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+
+
